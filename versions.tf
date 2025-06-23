@@ -1,3 +1,7 @@
+locals {
+  full_talos_version = "v${var.talos_version}"
+}
+
 variable "talos_version" {
   # https://github.com/siderolabs/talos/releases
   description = "Talos version to use"
@@ -8,10 +12,10 @@ variable "talos_version" {
 variable "talos_machine_install_image_url" {
   # https://www.talos.dev/v1.7/talos-guides/install/boot-assets/
   description = "The URL of the Talos machine install image"
-  type = string
+  type        = string
   # % is replaced by talos_version
   default = "factory.talos.dev/metal-installer-secureboot/eebdd12b24d4c9492a6bee2c863922c54b35af63d215ea07284d93180b97fd88:v%"
-# default = "ghcr.io/siderolabs/installer:v%" // = default, when not using system extensions
+  # default = "ghcr.io/siderolabs/installer:v%" // = default, when not using system extensions
 }
 
 variable "k8s_version" {

@@ -1,0 +1,19 @@
+# id b4bfd8e0eba7ced315443df11f663d20afb49284b5d5e2eb1b752574dc4e6be4
+# commands: console=ttyS0 panic=10 net.ifnames=0 init_on_alloc=1 init_on_free=1 slab_nomerge pti=on lockdown=integrity
+# download: https://factory.talos.dev/image/b4bfd8e0eba7ced315443df11f663d20afb49284b5d5e2eb1b752574dc4e6be4/v1.10.0/nocloud-amd64-secureboot.iso
+# installer: factory.talos.dev/nocloud-installer-secureboot/b4bfd8e0eba7ced315443df11f663d20afb49284b5d5e2eb1b752574dc4e6be4:v1.10.0
+customization:
+  extraKernelArgs:
+    - console=ttyS0
+    - panic=10
+    - net.ifnames=0
+    - init_on_alloc=1
+    - init_on_free=1
+    - slab_nomerge
+    - pti=on
+    - lockdown=integrity
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/iscsi-tools
+      - siderolabs/qemu-guest-agent
+      - siderolabs/util-linux-tools

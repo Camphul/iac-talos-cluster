@@ -8,7 +8,7 @@ locals {
     talos_version       = var.talos_version,
     network_gateway     = var.network_gateway,
     install_disk_device = var.install_disk_device,
-    install_image_url   = replace(var.talos_machine_install_image_url, "%", var.talos_version),
+    install_image_url   = data.talos_image_factory_urls.this.urls.installer_secureboot
 
     #    harbor_url      = var.harbor_url,
     #    harbor_domain   = split("://", var.harbor_url)[1]
@@ -38,14 +38,19 @@ data "talos_machine_configuration" "cp" {
   cluster_endpoint   = local.cluster_endpoint
   talos_version      = "v${var.talos_version}"
   kubernetes_version = "v${var.k8s_version}"
-  docs               = false
+  docs               = true
   examples           = false
 
   config_patches = [
     templatefile("${path.module}/talos-config/default.yaml.tpl", local.talos_mc_defaults),
   ]
 }
-
+data "talos_image_factory_urls" "this" {
+  talos_version = "v${var.talos_version}"
+  schematic_id  = var.talos_schematic_id
+  platform      = var.talos_schematic_platform
+  architecture  = "amd64"
+}
 data "talos_machine_configuration" "wn" {
   machine_type       = "worker"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
@@ -53,7 +58,7 @@ data "talos_machine_configuration" "wn" {
   cluster_endpoint   = local.cluster_endpoint
   talos_version      = "v${var.talos_version}"
   kubernetes_version = "v${var.k8s_version}"
-  docs               = false
+  docs               = true
   examples           = false
 
   config_patches = [

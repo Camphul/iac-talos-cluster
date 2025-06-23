@@ -30,7 +30,7 @@ resource "macaddress" "talos-control-plane" {
 
 resource "proxmox_virtual_environment_vm" "talos-control-plane" {
   depends_on = [
-    # proxmox_virtual_environment_file.talos-iso,
+    proxmox_virtual_environment_download_file.talos-iso,
     macaddress.talos-control-plane
   ]
   for_each = {
@@ -59,13 +59,14 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
         gateway = var.network_gateway
       }
     }
+
   }
   tags            = ["talos", "terraform"]
   stop_on_destroy = true
   boot_order      = ["scsi0", "ide3"]
   cdrom {
     interface = "ide3"
-    file_id   = replace(local.talos_iso_image_location, "%", var.talos_version)
+    file_id   = proxmox_virtual_environment_download_file.talos-iso.id
   }
 
   cpu {

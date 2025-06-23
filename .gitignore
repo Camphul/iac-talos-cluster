@@ -7,3 +7,4 @@ plan*
 *.tfplan
 *.tmp
 kubeconfig.y*
+/manifests/cilium/base/charts/

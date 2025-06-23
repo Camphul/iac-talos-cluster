@@ -6,7 +6,7 @@ resource "synclocal_url" "metrics_server_manifest" {
 
 data "external" "kustomize_metrics-server" {
   depends_on = [synclocal_url.metrics_server_manifest]
-  program    = [
+  program = [
     "go",
     "run",
     "${path.module}/cmd/kustomize",
@@ -28,10 +28,10 @@ data "external" "kustomize_bootstrap-manifests" {
     synclocal_url.argocd_manifest,
   ]
   for_each = {
-    for i, m in var.bootstrap_manifests: "bootstrap-manifest-${i}" => m
+    for i, m in var.bootstrap_manifests : "bootstrap-manifest-${i}" => m
   }
 
-  program  = [
+  program = [
     "go",
     "run",
     "${path.module}/cmd/kustomize",

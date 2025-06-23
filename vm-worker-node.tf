@@ -20,8 +20,11 @@ resource "macaddress" "talos-worker-node" {
 
 resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   depends_on = [
-    #     proxmox_virtual_environment_file.talos-iso,
-    macaddress.talos-worker-node
+    proxmox_virtual_environment_download_file.talos-iso,
+    macaddress.talos-worker-node,
+    var.worker_nodes,
+    local.pve_node_fallback,
+    local.vm_worker_nodes
   ]
   for_each = {
     for i, x in local.vm_worker_nodes : i => x
@@ -29,7 +32,7 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
 
   name                = "${var.worker_node_name_prefix}-${each.key + 1}"
   vm_id               = each.key + var.worker_node_first_id
-  node_name           = coalesce(each.value.target_node, local.pve_node_fallback)
+  node_name           = coalesce(each.value.target_server, local.pve_node_fallback)
   on_boot             = true
   machine             = "q35"
   scsi_hardware       = "virtio-scsi-single"
@@ -56,7 +59,7 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   boot_order      = ["scsi0", "ide3"]
   cdrom {
     interface = "ide3"
-    file_id   = replace(local.talos_iso_image_location, "%", var.talos_version)
+    file_id   = proxmox_virtual_environment_download_file.talos-iso.id
   }
 
   cpu {
