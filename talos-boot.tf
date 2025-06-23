@@ -16,13 +16,23 @@ resource "terraform_data" "inline-manifests" {
       contents = data.external.kustomize_cilium.result.manifests
     },
     {
-      name     = "cilium-bgp-peering-policy"
-      contents = templatefile("${path.module}/manifests/cilium/bgp-peering-policy.yaml.tpl", {
-        cilium_asn = var.cilium_asn,
-        router_ip  = var.router_ip != "" ? var.router_ip : var.network_gateway,
-        router_asn = var.router_asn,
+      name = "cilium-l2-announcement"
+      contents = templatefile("${path.module}/manifests/cilium/l2_announcement.yaml.tpl", {
+      })
+    },
+    {
+      name = "cilium-lb-ip-pool"
+      contents = templatefile("${path.module}/manifests/cilium/lb-ip-pool.yaml.tpl", {
       })
     }
+    # {
+    #   name     = "cilium-bgp-peering-policy"
+    #   contents = templatefile("${path.module}/manifests/cilium/bgp-peering-policy.yaml.tpl", {
+    #     cilium_asn = var.cilium_asn,
+    #     router_ip  = var.router_ip != "" ? var.router_ip : var.network_gateway,
+    #     router_asn = var.router_asn,
+    #   })
+    # }
   ]
 }
 
@@ -85,13 +95,13 @@ resource "talos_machine_configuration_apply" "worker-nodes" {
     templatefile("${path.module}/talos-config/node-labels.yaml.tpl", {
       node_labels = jsonencode(each.value.node_labels),
     })
-  ],
+    ],
     [
       for disk in each.value.data_disks : templatefile(
-      "${path.module}/talos-config/worker-node-disk.yaml.tpl",
-      {
-        disk_device = "/dev/${disk.device_name}",
-        mount_point = disk.mount_point,
+        "${path.module}/talos-config/worker-node-disk.yaml.tpl",
+        {
+          disk_device = "/dev/${disk.device_name}",
+          mount_point = disk.mount_point,
       })
     ]
   )
