@@ -20,13 +20,13 @@ machine:
         vip:
           ip: ${ipv4_vip}
     nameservers:
-%{ for nameserver in nameservers ~}
-      - ${nameserver}
-%{endfor }
+    %{ for name_server in name_servers ~}
+      - ${name_server}
+    %{ endfor }
     searchDomains:
-%{ for seach_domain in search_domains ~}
-        - ${seach_domain}
-%{ endfor ~}
+    %{ for search_domain in search_domains ~}
+      - ${search_domain}
+    %{ endfor }
     extraHostEntries:
       - ip: 127.0.0.1
         aliases:

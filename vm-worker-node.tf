@@ -3,8 +3,8 @@ locals {
     for i, worker in var.worker_nodes : [
       for j in range(worker.count) : {
         index         = i
-        target_server = worker.target_server
-        node_labels   = merge(var.proxmox_servers[worker.target_server].node_labels, worker.node_labels)
+        target_server = coalesce(worker.target_server, local.pve_node_fallback)
+        node_labels   = merge(var.proxmox_servers[coalesce(worker.target_server, local.pve_node_fallback)].node_labels, worker.node_labels)
         cpu_cores     = worker.cpu_cores > 0 ? worker.cpu_cores : var.worker_node_cpu_cores
         memory        = worker.memory > 0 ? worker.memory : var.worker_node_memory
         disk_size     = worker.disk_size > 0 ? worker.disk_size : var.worker_node_disk_size
@@ -29,12 +29,13 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
 
   name                = "${var.worker_node_name_prefix}-${each.key + 1}"
   vm_id               = each.key + var.worker_node_first_id
-  node_name           = each.value.target_server
+  node_name           = coalesce(each.value.target_node, local.pve_node_fallback)
   on_boot             = true
   machine             = "q35"
   scsi_hardware       = "virtio-scsi-single"
   bios                = "ovmf"
   tablet_device       = false
+  timeout_create      = 480
   timeout_stop_vm     = 300
   timeout_shutdown_vm = 900
 
@@ -71,8 +72,6 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   }
 
   network_device {
-    enabled     = true
-    model       = "virtio"
     bridge      = var.proxmox_servers[each.value.target_server].network_bridge
     mac_address = macaddress.talos-worker-node[each.key].address
     vlan_id     = var.network_vlan

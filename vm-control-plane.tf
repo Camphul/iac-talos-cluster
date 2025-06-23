@@ -39,12 +39,13 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
 
   name                = "${var.control_plane_name_prefix}-${each.key + 1}"
   vm_id               = each.key + var.control_plane_first_id
-  node_name           = each.value
+  node_name           = coalesce(each.value, local.pve_node_fallback)
   on_boot             = true
   machine             = "q35"
   scsi_hardware       = "virtio-scsi-single"
   bios                = "ovmf"
   tablet_device       = false
+  timeout_create      = 480
   timeout_stop_vm     = 300
   timeout_shutdown_vm = 900
   agent {
@@ -80,7 +81,6 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
   }
 
   network_device {
-    model       = "virtio"
     bridge      = var.proxmox_servers[each.value].network_bridge
     mac_address = macaddress.talos-control-plane[each.key].address
     vlan_id     = var.network_vlan

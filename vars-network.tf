@@ -17,13 +17,15 @@ variable "network_vlan" {
 }
 
 variable "network_nameservers" {
-  type        = optional(list(string))
-  description = "List of DNS servers"
+  type        = list(string)
+  description = "List of name servers"
+  default     = []
 }
 
 variable "network_search_domains" {
-  type        = optional(list(string))
+  type        = list(string)
   description = "Search domain"
+  default     = []
 }
 
 variable "network_gateway" {
