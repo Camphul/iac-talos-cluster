@@ -24,6 +24,10 @@ machine:
       - ip: 127.0.0.1
         aliases:
           - ${cluster_domain}
+      - ip: 10.10.10.170 # RPI hosting registry mirrors
+        # The host alias.
+        aliases:
+          - rpi01.home.lsapps.nl
 
   # https://github.com/siderolabs/talos-cloud-controller-manager#node-certificate-approval
   features:
@@ -36,3 +40,6 @@ machine:
 
 cluster:
   inlineManifests: ${inline_manifests}
+  apiServer:
+    extraArgs:
+      feature-gates: UserNamespacesSupport=true,UserNamespacesPodSecurityStandards=true

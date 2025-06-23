@@ -62,13 +62,15 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
   }
 
   cpu {
-    type    = "host"
+    type  = "x86-64-v3"
+    flags = ["+aes"]
     sockets = 1
     cores   = var.control_plane_cpu_cores
   }
 
   memory {
     dedicated = var.control_plane_memory*1024
+    floating = var.control_plane_memory*1024
   }
 
   network_device {

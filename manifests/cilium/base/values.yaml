@@ -1,31 +1,107 @@
 # https://www.talos.dev/v1.5/kubernetes-guides/network/deploying-cilium/
 k8sServiceHost: localhost
 k8sServicePort: 7445
+cluster:
+  name: talos-cluster
+  id: 1
 
+ipv6:
+  enabled: false
+
+kubeProxyReplacement: true
+
+bpf:
+  hostLegacyRouting: false
 priorityClassName: "high-priority"
+operator:
+  enabled: true
+  replicas: 1
+  priorityClassName: "high-priority"
+  rollOutPods: true
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+  unmanagedPodWatched:
+    enabled: true
+    intervalSeconds: 60
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
+
+rollOutCiliumPods: true
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 512Mi
+l2announcements:
+  enabled: true
+  leaseDuration: 10s
+  leaseRenewDeadline: 5s
+  leaseRetryPeriod: 1s
+
+externalIPs:
+  enabled: true
+
+ciliumEndpointSlice:
+  enabled: true
+
+loadBalancer:
+  algorithm: maglev
 
 securityContext:
   capabilities:
     ciliumAgent:
+      - PERMON
+      - BPF
       - CHOWN
       - KILL
       - NET_ADMIN
       - NET_RAW
       - IPC_LOCK
-      - SYS_ADMIN
       - SYS_RESOURCE
       - DAC_OVERRIDE
       - FOWNER
       - SETGID
       - SETUID
     cleanCiliumState:
+      - PERMON
+      - BPF
+      - CHOWN
+      - KILL
       - NET_ADMIN
-      - SYS_ADMIN
+      - NET_RAW
+      - IPC_LOCK
       - SYS_RESOURCE
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    applySysctlOverwrites:
+      - SYS_ADMIN
+      - SYS_CHROOT
+      - SYS_PTRACE
+  seccompProfile:
+    type: Unconfined
+  privileged: true
+  allowPrivilegeEscalation: true
+
+ingressController:
+  enabled: true
+  default: true
+  loadbalancerMode: shared
+  enforceHttps: false
 
 # https://docs.cilium.io/en/v1.14/network/bgp-control-plane/
 bgpControlPlane:
-  enabled: true
+  enabled: false
 
 hubble:
   enabled: true
@@ -36,12 +112,6 @@ hubble:
 
 ipam:
   mode: kubernetes
-
-kubeProxyReplacement: strict
-
-operator:
-  replicas: 1
-  priorityClassName: "high-priority"
 
 cgroup:
   autoMount:

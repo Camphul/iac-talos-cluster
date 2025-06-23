@@ -52,13 +52,15 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   }
 
   cpu {
-    type    = "host"
+    type  = "x86-64-v3"
+    flags = ["+aes"]
     sockets = 1
     cores   = each.value.cpu_cores
   }
 
   memory {
     dedicated = each.value.memory*1024
+    floating = each.value.memory*1024
   }
 
   network_device {

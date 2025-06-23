@@ -20,3 +20,7 @@ machine:
       - ip: ${ipv4_vip}
         aliases:
           - ${cluster_domain}
+      - ip: 10.10.10.170 # RPI hosting registry mirrors
+        # The host alias.
+        aliases:
+          - rpi01.home.lsapps.nl

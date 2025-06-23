@@ -9,15 +9,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/roeldev/iac-talos-cluster
+    repoURL: https://github.com/Camphul/iac-talos-cluster
     targetRevision: HEAD
     path: manifests/cilium
   destination:
     server: https://kubernetes.default.svc
-    namespace: cilium-system
+    namespace: kube-system
   syncPolicy:
     syncOptions:
-      - CreateNamespace=true
+      - CreateNamespace=false
     automated:
       selfHeal: true
       prune: true

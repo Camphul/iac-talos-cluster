@@ -1,8 +1,22 @@
 # https://www.talos.dev/v1.7/talos-guides/install/boot-assets/
+# schema id eebdd12b24d4c9492a6bee2c863922c54b35af63d215ea07284d93180b97fd88
+# iso https://factory.talos.dev/image/eebdd12b24d4c9492a6bee2c863922c54b35af63d215ea07284d93180b97fd88/v1.10.0/metal-amd64-secureboot.iso
+# installer factory.talos.dev/metal-installer-secureboot/eebdd12b24d4c9492a6bee2c863922c54b35af63d215ea07284d93180b97fd88:v1.10.0
 customization:
+  extraKernelArgs:
+    - -console
+    - console=ttyS0
+    - talos.shutdown=poweroff
+    - panic=10
+    - net.ifnames=0
+    - init_on_alloc=1
+    - init_on_free=1
+    - slab_nomerge
+    - pti=on
+    - -lockdown
+    - lockdown=integrity
   systemExtensions:
-    # https://github.com/siderolabs/extensions
     officialExtensions:
-      - siderolabs/qemu-guest-agent
       - siderolabs/iscsi-tools
+      - siderolabs/qemu-guest-agent
       - siderolabs/util-linux-tools
