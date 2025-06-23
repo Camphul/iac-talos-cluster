@@ -19,7 +19,14 @@ machine:
             gateway: ${network_gateway}
         vip:
           ip: ${ipv4_vip}
-
+    nameservers:
+%{ for nameserver in nameservers ~}
+      - ${nameserver}
+%{endfor }
+    searchDomains:
+%{ for seach_domain in search_domains ~}
+        - ${seach_domain}
+%{ endfor ~}
     extraHostEntries:
       - ip: 127.0.0.1
         aliases:

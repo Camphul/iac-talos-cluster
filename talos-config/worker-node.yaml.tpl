@@ -15,7 +15,14 @@ machine:
         routes:
           - network: 0.0.0.0/0
             gateway: ${network_gateway}
-
+    nameservers:
+%{ for nameserver in nameservers ~}
+      - ${nameserver}
+%{endfor }
+    searchDomains:
+%{ for seach_domain in search_domains ~}
+        - ${seach_domain}
+%{ endfor ~}
     extraHostEntries:
       - ip: ${ipv4_vip}
         aliases:

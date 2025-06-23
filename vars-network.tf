@@ -16,6 +16,16 @@ variable "network_vlan" {
   description = "Vlan to configure on the network device"
 }
 
+variable "network_nameservers" {
+  type        = optional(list(string))
+  description = "List of DNS servers"
+}
+
+variable "network_search_domains" {
+  type        = optional(list(string))
+  description = "Search domain"
+}
+
 variable "network_gateway" {
   description = "Gateway of the network"
   type        = string

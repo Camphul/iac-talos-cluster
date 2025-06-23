@@ -56,13 +56,15 @@ resource "talos_machine_configuration_apply" "control-planes" {
       topology_zone     = each.value,
       cluster_domain    = var.cluster_domain,
       cluster_endpoint  = local.cluster_endpoint,
-      network_interface = "enx${lower(replace(macaddress.talos-control-plane[each.key].address, ":", ""))}",
+      network_interface = "eth0" # "enx${lower(replace(macaddress.talos-control-plane[each.key].address, ":", ""))}",
       network_ip_prefix = var.network_ip_prefix,
       network_gateway   = var.network_gateway,
       hostname          = "${var.control_plane_name_prefix}-${each.key + 1}"
       ipv4_local        = cidrhost(var.network_cidr, each.key + var.control_plane_first_ip),
       ipv4_vip          = var.cluster_vip,
       inline_manifests  = jsonencode(terraform_data.inline-manifests.output),
+      nameservers       = var.network_nameservers,
+      search_domains    = var.network_search_domains
     }),
   ]
 }
@@ -85,12 +87,14 @@ resource "talos_machine_configuration_apply" "worker-nodes" {
     templatefile("${path.module}/talos-config/worker-node.yaml.tpl", {
       topology_zone     = each.value.target_server,
       cluster_domain    = var.cluster_domain,
-      network_interface = "enx${lower(replace(macaddress.talos-worker-node[each.key].address, ":", ""))}",
+      network_interface = "eth0" #"enx${lower(replace(macaddress.talos-worker-node[each.key].address, ":", ""))}",
       network_ip_prefix = var.network_ip_prefix,
       network_gateway   = var.network_gateway,
       hostname          = "${var.worker_node_name_prefix}-${each.key + 1}"
       ipv4_local        = cidrhost(var.network_cidr, each.key + var.worker_node_first_ip),
       ipv4_vip          = var.cluster_vip,
+      nameservers       = var.network_nameservers,
+      search_domains    = var.network_search_domains
     }),
     templatefile("${path.module}/talos-config/node-labels.yaml.tpl", {
       node_labels = jsonencode(each.value.node_labels),
