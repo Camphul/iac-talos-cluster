@@ -41,8 +41,8 @@ machine:
           insecureSkipVerify: true
 
   time:
+    disabled: false
     servers:
-      - ${network_gateway}
       - 0.nl.pool.ntp.org
       - 1.nl.pool.ntp.org
       - 2.nl.pool.ntp.org

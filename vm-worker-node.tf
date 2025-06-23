@@ -27,11 +27,16 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
     for i, x in local.vm_worker_nodes : i => x
   }
 
-  name          = "${var.worker_node_name_prefix}-${each.key + 1}"
-  vm_id         = each.key + var.worker_node_first_id
-  node_name     = each.value.target_server
-  on_boot       = true
-  scsi_hardware = "virtio-scsi-pci"
+  name                = "${var.worker_node_name_prefix}-${each.key + 1}"
+  vm_id               = each.key + var.worker_node_first_id
+  node_name           = each.value.target_server
+  on_boot             = true
+  machine             = "q35"
+  scsi_hardware       = "virtio-scsi-single"
+  bios                = "ovmf"
+  tablet_device       = false
+  timeout_stop_vm     = 300
+  timeout_shutdown_vm = 900
 
   agent {
     enabled = true
@@ -45,9 +50,12 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
       }
     }
   }
-
+  tags            = ["talos", "terraform"]
+  stop_on_destroy = true
+  boot_order      = ["scsi0", "ide3"]
   cdrom {
-    file_id = replace(local.talos_iso_image_location, "%", var.talos_version)
+    interface = "ide3"
+    file_id   = replace(local.talos_iso_image_location, "%", var.talos_version)
   }
 
   cpu {
@@ -75,12 +83,13 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   }
 
   disk {
-    interface    = "virtio0"
     size         = each.value.disk_size
     datastore_id = var.proxmox_servers[each.value.target_server].disk_storage_pool
-    file_format  = "raw"
-    cache        = "writethrough"
+    interface    = "scsi0"
     iothread     = true
+    cache        = "writethrough"
+    discard      = "on"
+    ssd          = true
     backup       = false
   }
 
