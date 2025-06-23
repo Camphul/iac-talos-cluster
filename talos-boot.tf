@@ -22,7 +22,7 @@ resource "terraform_data" "inline-manifests" {
     },
     {
       name = "cilium-lb-ip-pool"
-      contents = templatefile("${path.module}/manifests/cilium/lb-ip-pool.yaml.tpl", {
+      contents = templatefile("${path.module}/manifests/cilium/lb_ip_pool.yaml.tpl", {
       })
     }
     # {
