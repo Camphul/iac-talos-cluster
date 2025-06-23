@@ -7,28 +7,17 @@ variable "network_ip_prefix" {
 variable "network_cidr" {
   description = "Network address in CIDR notation"
   type        = string
-  default     = "10.0.0.1/24"
+  default     = "10.0.0.0/24"
+}
+
+variable "network_vlan" {
+  default     = 80
+  type        = number
+  description = "Vlan to configure on the network device"
 }
 
 variable "network_gateway" {
   description = "Gateway of the network"
   type        = string
   default     = "10.0.0.1"
-}
-
-variable "router_ip" {
-  description = "IP address of the router, uses network_gateway as default value"
-  type        = string
-  default     = ""
-}
-
-variable "router_asn" {
-  description = "Router ASN for use with Cilium BGP"
-  type        = number
-  default     = 64501
-}
-
-variable "cilium_asn" {
-  type    = number
-  default = 64500
 }

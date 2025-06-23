@@ -83,7 +83,8 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
     enabled     = true
     model       = "virtio"
     bridge      = var.proxmox_servers[each.value].network_bridge
-    mac_address = macaddress.talos-control-plane[each.key].address
+    mac_address = macaddress.talos-control-plane[each.key].addres
+    vlan_id     = var.network_vlan
     firewall    = false
   }
 

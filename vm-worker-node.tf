@@ -75,6 +75,7 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
     model       = "virtio"
     bridge      = var.proxmox_servers[each.value.target_server].network_bridge
     mac_address = macaddress.talos-worker-node[each.key].address
+    vlan_id     = var.network_vlan
     firewall    = false
   }
 
