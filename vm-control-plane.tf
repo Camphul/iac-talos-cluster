@@ -80,10 +80,9 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
   }
 
   network_device {
-    enabled     = true
     model       = "virtio"
     bridge      = var.proxmox_servers[each.value].network_bridge
-    mac_address = macaddress.talos-control-plane[each.key].addres
+    mac_address = macaddress.talos-control-plane[each.key].address
     vlan_id     = var.network_vlan
     firewall    = false
   }
