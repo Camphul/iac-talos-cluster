@@ -21,7 +21,6 @@ resource "local_sensitive_file" "export_kubeconfig" {
 
 data "external" "copy_talosconfig" {
   depends_on = [local_sensitive_file.export_talosconfig]
-
   program = [
     "go",
     "run",

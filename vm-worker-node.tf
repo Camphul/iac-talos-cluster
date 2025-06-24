@@ -41,18 +41,21 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   timeout_create      = 480
   timeout_stop_vm     = 300
   timeout_shutdown_vm = 900
-
+  startup {
+    up_delay = 15
+    order    = 2
+  }
   agent {
     enabled = true
   }
   efi_disk {
-    datastore_id      = var.talos_iso_destination_storage_pool
+    datastore_id      = var.proxmox_servers[each.value.target_server].disk_storage_pool
     pre_enrolled_keys = false
     file_format       = "raw"
     type              = "4m"
   }
   tpm_state {
-    datastore_id = var.talos_iso_destination_storage_pool
+    datastore_id = var.proxmox_servers[each.value.target_server].disk_storage_pool
     version      = "v2.0"
   }
   initialization {
@@ -121,6 +124,11 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
       iothread     = true
       backup       = false
     }
+  }
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
   }
 }
 

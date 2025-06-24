@@ -47,6 +47,10 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
   timeout_create      = 480
   timeout_stop_vm     = 300
   timeout_shutdown_vm = 900
+  startup {
+    up_delay = 10
+    order    = 1
+  }
   agent {
     enabled = true
   }

@@ -1,7 +1,8 @@
 # download and kustomize metrics server manifests
 resource "synclocal_url" "metrics_server_manifest" {
-  url      = local.metrics_server_manifest_url
-  filename = "${path.module}/manifests/metrics-server/metrics-server.yaml"
+  depends_on = [data.external.talos-nodes-ready]
+  url        = local.metrics_server_manifest_url
+  filename   = "${path.module}/manifests/metrics-server/metrics-server.yaml"
 }
 
 data "external" "kustomize_metrics-server" {
@@ -17,8 +18,9 @@ data "external" "kustomize_metrics-server" {
 
 # download and kustomize argocd manifests
 resource "synclocal_url" "argocd_manifest" {
-  url      = local.argocd_manifest_url
-  filename = "${path.module}/manifests/argocd/argocd.yaml"
+  depends_on = [data.external.talos-nodes-ready]
+  url        = local.argocd_manifest_url
+  filename   = "${path.module}/manifests/argocd/argocd.yaml"
 }
 
 # prepare the bootstrap manifests and write them in the output directory

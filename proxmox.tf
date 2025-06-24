@@ -3,7 +3,6 @@ locals {
 }
 
 resource "proxmox_virtual_environment_download_file" "talos-iso" {
-  depends_on          = [data.talos_image_factory_urls.this]
   content_type        = "iso"
   datastore_id        = var.talos_iso_destination_storage_pool
   node_name           = var.talos_iso_destination_server
@@ -11,4 +10,5 @@ resource "proxmox_virtual_environment_download_file" "talos-iso" {
   file_name           = local.local_talos_iso_file_name
   overwrite_unmanaged = true
   overwrite           = false
+  upload_timeout      = 600
 }

@@ -4,8 +4,7 @@ resource "time_sleep" "wait_for_vms_to_boot" {
     proxmox_virtual_environment_vm.talos-control-plane,
     proxmox_virtual_environment_vm.talos-worker-node
   ]
-  destroy_duration = "1s"
-  create_duration  = "15s"
+  create_duration = "15s"
 }
 
 # vms are booted, use nmap to scan the network and match the known mac
