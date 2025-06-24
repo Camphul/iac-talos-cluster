@@ -52,7 +52,16 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
   agent {
     enabled = true
   }
-
+  efi_disk {
+    datastore_id      = var.talos_iso_destination_storage_pool
+    pre_enrolled_keys = false
+    file_format       = "raw"
+    type              = "4m"
+  }
+  tpm_state {
+    datastore_id = var.talos_iso_destination_storage_pool
+    version      = "v2.0"
+  }
   initialization {
     ip_config {
       ipv4 {
