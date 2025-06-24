@@ -49,7 +49,7 @@ resource "talos_machine_configuration_apply" "control-planes" {
 
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.cp.machine_configuration
-
+  node                        = local.talos_cp_endpoints[each.key]
 
   config_patches = [
     templatefile("${path.module}/talos-config/control-plane.yaml.tpl", {

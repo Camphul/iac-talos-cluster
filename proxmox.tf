@@ -3,7 +3,7 @@ locals {
 }
 
 resource "proxmox_virtual_environment_download_file" "talos-iso" {
-  depends_on          = [data.talos_image_factory_urls]
+  depends_on          = [data.talos_image_factory_urls.this]
   content_type        = "iso"
   datastore_id        = var.talos_iso_destination_storage_pool
   node_name           = var.talos_iso_destination_server

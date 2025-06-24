@@ -1,6 +1,4 @@
 locals {
-  talos_iso_image_location = "${var.talos_iso_destination_storage_pool}:iso/${replace(var.talos_iso_destination_filename, "%", var.talos_version)}"
-
   //noinspection HILUnresolvedReference
   vm_control_planes = flatten([
     for name, host in var.proxmox_servers : [
