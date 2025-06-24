@@ -3,22 +3,22 @@ variable "worker_nodes" {
     # Name of Proxmox target server on which the worker node(s) will be deployed
     target_server = string
     # Additional kubernetes node labels to add to the worker node(s)
-    node_labels   = optional(map(string), {})
+    node_labels = optional(map(string), {})
     # Number of worker nodes to deploy on the target server
-    count         = optional(number, 1)
+    count = optional(number, 3)
 
     # The amount of CPU cores to give the worker node(s)
     cpu_cores = optional(number, 0)
     # The amount of memory in GiB to give the worker node(s)
-    memory    = optional(number, 0)
+    memory = optional(number, 0)
     # The size of the boot disk in GiB to give the worker node(s)
     disk_size = optional(number, 0)
 
     data_disks = optional(list(object({
-      device_name  = string
-      mount_point  = string
+      device_name = string
+      mount_point = string
       # The size of the data disk in GiB per worker node
-      size         = number
+      size = number
       # The name of the storage pool where the disk be stored
       storage_pool = optional(string, "")
     })), [])
