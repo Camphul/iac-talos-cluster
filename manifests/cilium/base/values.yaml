@@ -59,7 +59,7 @@ loadBalancer:
 securityContext:
   capabilities:
     ciliumAgent:
-      - PERMON
+      - PERFMON
       - BPF
       - CHOWN
       - KILL
@@ -72,7 +72,7 @@ securityContext:
       - SETGID
       - SETUID
     cleanCiliumState:
-      - PERMON
+      - PERFMON
       - BPF
       - CHOWN
       - KILL
@@ -98,10 +98,6 @@ ingressController:
   default: true
   loadbalancerMode: shared
   enforceHttps: false
-
-# https://docs.cilium.io/en/v1.14/network/bgp-control-plane/
-bgpControlPlane:
-  enabled: false
 
 hubble:
   enabled: true
