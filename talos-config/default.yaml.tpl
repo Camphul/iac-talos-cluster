@@ -48,18 +48,6 @@ machine:
     bootloader: true
     wipe: true
 
-  systemDiskEncryption:
-    ephemeral:
-      provider: luks2
-      keys:
-        - nodeID: { }
-          slot: 0
-    state:
-      provider: luks2
-      keys:
-        - nodeID: { }
-          slot: 0
-
   kernel:
     modules:
       - name: br_netfilter

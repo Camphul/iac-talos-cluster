@@ -34,7 +34,13 @@ resource "local_file" "cilium_kustomization" {
     cilium_version = var.cilium_version
   })
 }
-
+# kustomize  csr approver manifests
+resource "local_file" "csr_kustomization" {
+  filename = "${path.module}/manifests/csr-approver/kustomization.yaml"
+  content = templatefile("${path.module}/manifests/csr-approver/kustomization.yaml.tpl", {
+    # cilium_version = var.cilium_version
+  })
+}
 data "external" "kustomize_cilium" {
   depends_on = [local_file.cilium_kustomization]
   program = [
@@ -43,7 +49,18 @@ data "external" "kustomize_cilium" {
     "${path.module}/cmd/kustomize",
     "--",
     "--enable-helm",
-    "${path.module}/manifests/cilium",
+    "${path.module}/manifests/cilium/base",
+  ]
+}
+data "external" "kustomize_csr" {
+  depends_on = [local_file.csr_kustomization]
+  program = [
+    "go",
+    "run",
+    "${path.module}/cmd/kustomize",
+    "--",
+    "--enable-helm",
+    "${path.module}/manifests/csr-approver",
   ]
 }
 

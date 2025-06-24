@@ -1,21 +1,25 @@
 resource "terraform_data" "inline-manifests" {
   depends_on = [
     data.external.kustomize_talos-ccm,
-    data.external.kustomize_cilium,
+    data.external.kustomize_cilium
   ]
 
   input = [
     {
-      # required, prevents certificate errors
-      name     = "talos-ccm"
-      contents = data.external.kustomize_talos-ccm.result.manifests
-    },
-    {
       # required, is used as CNI and is needed for Talos to report nodes as ready
       name     = "cilium"
       contents = data.external.kustomize_cilium.result.manifests
-    }
-    # {
+    },
+    {
+      # required to approve CSR
+      name     = "csr-approver"
+      contents = data.external.kustomize_csr.result.manifests
+    },
+    {
+      # required, prevents certificate errors
+      name     = "talos-ccm"
+      contents = data.external.kustomize_talos-ccm.result.manifests
+    } # {
     #   name     = "cilium-bgp-peering-policy"
     #   contents = templatefile("${path.module}/manifests/cilium/bgp-peering-policy.yaml.tpl", {
     #     cilium_asn = var.cilium_asn,

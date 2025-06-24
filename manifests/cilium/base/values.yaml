@@ -11,7 +11,7 @@ ipv6:
 kubeProxyReplacement: true
 
 bpf:
-  hostLegacyRouting: false
+  hostLegacyRouting: true
 priorityClassName: "high-priority"
 operator:
   enabled: true
@@ -49,9 +49,6 @@ l2announcements:
 
 externalIPs:
   enabled: true
-
-ciliumEndpointSlice:
-  enabled: false
 
 loadBalancer:
   algorithm: maglev
