@@ -1,17 +1,17 @@
 locals {
-  cluster_endpoint     = "https://localhost:7445"
+  cluster_endpoint     = "https://${var.cluster_domain}:${var.cluster_endpoint_port}"
   cluster_endpoint_vip = "https://${var.cluster_vip}:${var.cluster_endpoint_port}"
   talos_cp_endpoints = [
     for i in range(
       var.control_plane_first_ip, var.control_plane_first_ip + local.vm_control_planes_count
     ) : cidrhost(var.network_cidr, i)
   ]
-  talos_worker_nodes = concat([
+  talos_worker_nodes = [
     for i in range(
       var.worker_node_first_ip, var.worker_node_first_ip + local.vm_worker_nodes_count
     ) : cidrhost(var.network_cidr, i)
-  ])
-  storage_mnt = "/var/mnt/storage"
+  ]
+  storage_mnt = "/var/mnt/custom-storage"
   # default talos_machine_configuration values
   talos_mc_defaults = {
     topology_region     = var.cluster_name,
@@ -46,7 +46,7 @@ data "talos_machine_configuration" "cp" {
   machine_type       = "controlplane"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   cluster_name       = var.cluster_name
-  cluster_endpoint   = local.cluster_endpoint
+  cluster_endpoint   = local.cluster_endpoint_vip
   talos_version      = local.full_talos_version
   kubernetes_version = local.full_k8s_version
   docs               = true
@@ -57,17 +57,16 @@ data "talos_machine_configuration" "cp" {
   ]
 }
 data "talos_machine_configuration" "wn" {
+  depends_on         = [data.talos_image_factory_urls.this]
   machine_type       = "worker"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   cluster_name       = var.cluster_name
-  cluster_endpoint   = local.cluster_endpoint
-  talos_version      = "v${var.talos_version}"
-  kubernetes_version = "v${var.k8s_version}"
+  cluster_endpoint   = local.cluster_endpoint_vip
+  talos_version      = local.full_talos_version
+  kubernetes_version = local.full_k8s_version
   docs               = true
   examples           = false
-
   config_patches = [
     templatefile("${path.module}/talos-config/default.yaml.tpl", local.talos_mc_defaults),
   ]
 }
-

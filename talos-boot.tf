@@ -64,7 +64,7 @@ resource "talos_machine_configuration_apply" "worker-nodes" {
     # data.external.mac-to-ip,
     data.talos_machine_configuration.wn,
     proxmox_virtual_environment_vm.talos-worker-node,
-    proxmox_virtual_environment_vm.talos-control-plane
+    terraform_data.inline-manifests,
   ]
   for_each = {
     for i, x in local.vm_worker_nodes : i => x
@@ -94,12 +94,13 @@ resource "talos_machine_configuration_apply" "worker-nodes" {
     })
     ],
     [
-      for disk in each.value.data_disks : templatefile(
+      for disk in coalesce(each.value.data_disks, []) : templatefile(
         "${path.module}/talos-config/worker-node-disk.yaml.tpl",
         {
-          disk_device = "/dev/${disk.device_name}",
-          mount_point = disk.mount_point,
-      })
+          disk_device = "/dev/${coalesce(disk.device_name, "default-device")}",
+          mount_point = coalesce(disk.mount_point, "/default-mount"),
+        }
+      )
     ]
   )
 }

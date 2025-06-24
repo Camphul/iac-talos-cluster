@@ -3,8 +3,8 @@ locals {
     for i, worker in var.worker_nodes : [
       for j in range(worker.count) : {
         index         = i
-        target_server = coalesce(worker.target_server, local.pve_node_fallback)
-        node_labels   = merge(var.proxmox_servers[coalesce(worker.target_server, local.pve_node_fallback)].node_labels, worker.node_labels)
+        target_server = worker.target_server
+        node_labels   = merge(var.proxmox_servers[worker.target_server].node_labels, worker.node_labels)
         cpu_cores     = worker.cpu_cores > 0 ? worker.cpu_cores : var.worker_node_cpu_cores
         memory        = worker.memory > 0 ? worker.memory : var.worker_node_memory
         disk_size     = worker.disk_size > 0 ? worker.disk_size : var.worker_node_disk_size
@@ -21,8 +21,6 @@ resource "macaddress" "talos-worker-node" {
 resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   depends_on = [
     proxmox_virtual_environment_download_file.talos-iso,
-    local.pve_node_fallback,
-    local.vm_worker_nodes
   ]
   for_each = {
     for i, x in local.vm_worker_nodes : i => x
@@ -30,7 +28,7 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
 
   name                = "${var.worker_node_name_prefix}-${each.key + 1}"
   vm_id               = each.key + var.worker_node_first_id
-  node_name           = coalesce(each.value.target_server, local.pve_node_fallback)
+  node_name           = each.value.target_server
   on_boot             = true
   machine             = "q35"
   scsi_hardware       = "virtio-scsi-single"
@@ -89,7 +87,6 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   }
 
   network_device {
-    bridge      = var.proxmox_servers[each.value.target_server].network_bridge
     mac_address = macaddress.talos-worker-node[each.key].address
     vlan_id     = var.network_vlan
     firewall    = false
@@ -100,7 +97,6 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   }
 
   disk {
-    size         = each.value.disk_size
     datastore_id = var.datastore-vmdata
     interface    = "scsi0"
     iothread     = true
@@ -114,7 +110,7 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
     for_each = var.worker_nodes[each.value.index].data_disks
 
     content {
-      interface    = "scsi${each.value.index + 1}"
+      interface    = "scsi${each.key + 1}"
       size         = disk.value.size
       datastore_id = var.datastore-vmdata
       # file_format  = "raw"

@@ -1,7 +1,7 @@
 variable "worker_nodes" {
   type = list(object({
     # Name of Proxmox target server on which the worker node(s) will be deployed
-    target_server = string
+    target_server = optional(string, "pve1")
     # Additional kubernetes node labels to add to the worker node(s)
     node_labels = optional(map(string), {})
     # Number of worker nodes to deploy on the target server
