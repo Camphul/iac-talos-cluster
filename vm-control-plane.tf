@@ -58,6 +58,11 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
         address = "${cidrhost(var.network_cidr, each.key + var.control_plane_first_ip)}/${split("/", var.network_cidr)[1]}"
         gateway = var.network_gateway
       }
+
+    }
+    dns {
+      servers = var.network_nameservers
+      domain  = var.network_search_domains[0]
     }
 
   }

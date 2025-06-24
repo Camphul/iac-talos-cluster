@@ -1,5 +1,6 @@
 locals {
   full_talos_version = "v${var.talos_version}"
+  full_k8s_version   = "v${var.k8s_version}"
 }
 
 variable "talos_version" {

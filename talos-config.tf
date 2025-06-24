@@ -1,6 +1,7 @@
 locals {
-  cluster_endpoint = "https://${var.cluster_domain}:${var.cluster_endpoint_port}"
-  storage_mnt      = "/var/mnt/storage"
+  cluster_endpoint_internal = "https://${var.cluster_domain}:${var.cluster_endpoint_port}"
+  cluster_endpoint          = "https://${var.cluster_vip}:${var.cluster_endpoint_port}"
+  storage_mnt               = "/var/mnt/storage"
 
   # default talos_machine_configuration values
   talos_mc_defaults = {
@@ -36,8 +37,8 @@ data "talos_machine_configuration" "cp" {
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   cluster_name       = var.cluster_name
   cluster_endpoint   = local.cluster_endpoint
-  talos_version      = "v${var.talos_version}"
-  kubernetes_version = "v${var.k8s_version}"
+  talos_version      = local.full_talos_version
+  kubernetes_version = local.full_k8s_version
   docs               = true
   examples           = false
 

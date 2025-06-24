@@ -20,6 +20,7 @@ data "external" "mac-to-ip" {
     "-subnet",
     join(",", var.mac-to-ip_scan_subnets),
   ],
+    [for i, cfg in macaddress.talos-worker-node : cfg.address]
     [for i, cfg in macaddress.talos-control-plane : cfg.address],
     [for i, cfg in macaddress.talos-worker-node : cfg.address],
   )

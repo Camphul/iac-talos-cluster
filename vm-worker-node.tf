@@ -53,6 +53,10 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
         gateway = var.network_gateway
       }
     }
+    dns {
+      servers = var.network_nameservers
+      domain  = var.network_search_domains[0]
+    }
   }
   tags            = ["talos", "terraform"]
   stop_on_destroy = true

@@ -1,8 +1,6 @@
 machine:
   nodeLabels:
     topology.kubernetes.io/region: ${topology_region}
-    cilium/bgp-peering-policy: default
-
   kubelet:
     defaultRuntimeSeccompProfileEnabled: true
     extraConfig:
@@ -15,9 +13,6 @@ machine:
       cloud-provider: external
       rotate-server-certificates: true
 
-  network:
-    nameservers:
-      - ${network_gateway}
   registries:
     mirrors:
       ghcr.io:
@@ -52,7 +47,7 @@ machine:
     disk: ${install_disk_device}
     image: ${install_image_url}
     bootloader: true
-    wipe: false
+    wipe: true
 
   systemDiskEncryption:
     ephemeral:
