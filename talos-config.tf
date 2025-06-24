@@ -1,6 +1,6 @@
 locals {
-  cluster_endpoint_internal = "https://${var.cluster_domain}:${var.cluster_endpoint_port}"
-  cluster_endpoint          = "https://${var.cluster_vip}:${var.cluster_endpoint_port}"
+  cluster_endpoint     = "https://${var.cluster_domain}:${var.cluster_endpoint_port}"
+  cluster_endpoint_vip = "https://${var.cluster_vip}:${var.cluster_endpoint_port}"
   talos_cp_endpoints = [
     for i in range(
       var.control_plane_first_ip, var.control_plane_first_ip + local.vm_control_planes_count
