@@ -21,7 +21,6 @@ resource "macaddress" "talos-worker-node" {
 resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   depends_on = [
     proxmox_virtual_environment_download_file.talos-iso,
-    macaddress.talos-worker-node,
     local.pve_node_fallback,
     local.vm_worker_nodes
   ]
@@ -41,8 +40,8 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   timeout_stop_vm     = 300
   timeout_shutdown_vm = 900
   startup {
-    up_delay = 15
-    order    = 2
+    up_delay = 15 + each.key
+    order    = 3
   }
   agent {
     enabled = true

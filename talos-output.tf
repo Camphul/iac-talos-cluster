@@ -3,7 +3,7 @@ resource "talos_cluster_kubeconfig" "this" {
     talos_machine_bootstrap.this,
   ]
   node                 = cidrhost(var.network_cidr, var.control_plane_first_ip)
-  endpoint             = "https://${var.cluster_vip}:${var.cluster_endpoint_port}"
+  endpoint             = "https://${var.control_plane_first_ip}:${var.cluster_endpoint_port}"
   client_configuration = data.talos_client_configuration.this.client_configuration
 }
 

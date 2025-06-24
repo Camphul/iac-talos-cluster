@@ -12,13 +12,13 @@ machine:
     interfaces:
       - interface: ${network_interface}
         dhcp: false
+        vip:
+          ip: ${ipv4_vip}
         addresses:
           - ${ipv4_local}/${network_ip_prefix}
         routes:
           - network: 0.0.0.0/0
             gateway: ${network_gateway}
-        vip:
-          ip: ${ipv4_vip}
     nameservers:
     %{ for name_server in name_servers ~}
       - ${name_server}

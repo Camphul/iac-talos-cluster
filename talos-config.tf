@@ -6,7 +6,7 @@ locals {
       var.control_plane_first_ip, var.control_plane_first_ip + local.vm_control_planes_count
     ) : cidrhost(var.network_cidr, i)
   ]
-  talos_worker_nodes = concat([var.cluster_vip], [
+  talos_worker_nodes = concat([
     for i in range(
       var.worker_node_first_ip, var.worker_node_first_ip + local.vm_worker_nodes_count
     ) : cidrhost(var.network_cidr, i)

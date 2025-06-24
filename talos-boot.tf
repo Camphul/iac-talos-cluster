@@ -130,11 +130,11 @@ resource "talos_machine_bootstrap" "this" {
 # be ready but instead errors and fails when unable to connect to nodes that
 # are in the process of getting ready
 #
-# data "talos_cluster_health" "ready" {
-#   depends_on = [null_resource.talos-cluster-up]
-#
-#   client_configuration = talos_machine_secrets.this.client_configuration
-#   endpoints            = [for i, mac in macaddress.talos-control-plane : data.external.mac-to-ip.result[mac.address]]
-#   control_plane_nodes  = [for i, mac in macaddress.talos-control-plane : data.external.mac-to-ip.result[mac.address]]
-#   worker_nodes         = [for i, mac in macaddress.talos-worker-node : data.external.mac-to-ip.result[mac.address]]
-# }
+data "talos_cluster_health" "ready" {
+  depends_on             = [null_resource.talos-cluster-up]
+  skip_kubernetes_checks = true
+  client_configuration   = talos_machine_secrets.this.client_configuration
+  endpoints              = local.talos_cp_endpoints
+  control_plane_nodes    = local.talos_cp_endpoints
+  worker_nodes           = local.talos_worker_nodes
+}
