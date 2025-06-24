@@ -22,7 +22,6 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
   depends_on = [
     proxmox_virtual_environment_download_file.talos-iso,
     macaddress.talos-worker-node,
-    var.worker_nodes,
     local.pve_node_fallback,
     local.vm_worker_nodes
   ]
@@ -49,13 +48,13 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
     enabled = true
   }
   efi_disk {
-    datastore_id      = var.proxmox_servers[each.value.target_server].disk_storage_pool
+    datastore_id      = var.datastore-vmdata
     pre_enrolled_keys = false
     file_format       = "raw"
     type              = "4m"
   }
   tpm_state {
-    datastore_id = var.proxmox_servers[each.value.target_server].disk_storage_pool
+    datastore_id = var.datastore-vmdata
     version      = "v2.0"
   }
   initialization {
@@ -103,7 +102,7 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
 
   disk {
     size         = each.value.disk_size
-    datastore_id = var.proxmox_servers[each.value.target_server].disk_storage_pool
+    datastore_id = var.datastore-vmdata
     interface    = "scsi0"
     iothread     = true
     cache        = "writethrough"
@@ -116,13 +115,16 @@ resource "proxmox_virtual_environment_vm" "talos-worker-node" {
     for_each = var.worker_nodes[each.value.index].data_disks
 
     content {
-      interface    = "virtio${each.value.index + 1}"
+      interface    = "scsi${each.value.index + 1}"
       size         = disk.value.size
-      datastore_id = disk.value.storage_pool != "" ? disk.value.storage_pool : var.proxmox_servers[each.value.target_server].disk_storage_pool
-      file_format  = "raw"
-      cache        = "none"
-      iothread     = true
-      backup       = false
+      datastore_id = var.datastore-vmdata
+      # file_format  = "raw"
+      # cache        = "none"
+      iothread = true
+      cache    = "writethrough"
+      discard  = "on"
+      ssd      = true
+      backup   = false
     }
   }
   lifecycle {

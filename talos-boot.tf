@@ -73,6 +73,8 @@ resource "talos_machine_configuration_apply" "worker-nodes" {
   depends_on = [
     # data.external.mac-to-ip,
     data.talos_machine_configuration.wn,
+    proxmox_virtual_environment_vm.talos-worker-node,
+    proxmox_virtual_environment_vm.talos-control-plane
   ]
   for_each = {
     for i, x in local.vm_worker_nodes : i => x
@@ -114,6 +116,8 @@ resource "talos_machine_configuration_apply" "worker-nodes" {
 
 resource "talos_machine_bootstrap" "this" {
   depends_on = [
+    proxmox_virtual_environment_vm.talos-worker-node,
+    proxmox_virtual_environment_vm.talos-control-plane,
     talos_machine_configuration_apply.control-planes,
     talos_machine_configuration_apply.worker-nodes,
   ]

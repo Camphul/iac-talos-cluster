@@ -15,11 +15,17 @@ variable "talos_iso_destination_storage_pool" {
 variable "talos_schematic_id" {
   description = "Talos Imager Schematic ID"
   type        = string
-  default     = ""
+  nullable    = false
 }
 
 variable "talos_schematic_platform" {
   description = "Which platform in use"
   type        = string
   default     = "nocloud"
+}
+
+variable "datastore-vmdata" {
+  default     = "local-vmdata"
+  description = "Datastore for VM disks"
+  type        = string
 }

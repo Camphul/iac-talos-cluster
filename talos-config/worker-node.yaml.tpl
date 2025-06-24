@@ -2,6 +2,8 @@ machine:
   nodeLabels:
     topology.kubernetes.io/zone: ${topology_zone}
   certSANs:
+    - ${cluster_domain}
+    - ${ipv4_vip}
     - ${hostname}
     - ${ipv4_local}
 

@@ -34,13 +34,12 @@ data "talos_client_configuration" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
   cluster_name         = var.cluster_name
   nodes                = concat(local.talos_cp_endpoints, local.talos_worker_nodes)
-  endpoints            = concat(local.talos_cp_endpoints, [var.cluster_vip], )
+  endpoints            = concat(local.talos_cp_endpoints)
 }
 data "talos_image_factory_urls" "this" {
   talos_version = "v${var.talos_version}"
   schematic_id  = var.talos_schematic_id
   platform      = var.talos_schematic_platform
-  architecture  = "amd64"
 }
 data "talos_machine_configuration" "cp" {
   depends_on         = [data.talos_image_factory_urls.this]

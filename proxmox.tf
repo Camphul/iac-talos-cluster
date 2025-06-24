@@ -1,5 +1,5 @@
 locals {
-  local_talos_iso_file_name = "talos-v${var.talos_version}-${var.talos_schematic_id}-${var.talos_schematic_platform}-amd64-secureboot.yaml"
+  local_talos_iso_file_name = "talos-v${var.talos_version}-${var.talos_schematic_id}-${var.talos_schematic_platform}-amd64-secureboot.iso"
 }
 
 resource "proxmox_virtual_environment_download_file" "talos-iso" {

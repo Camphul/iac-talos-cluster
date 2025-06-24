@@ -55,13 +55,13 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
     enabled = true
   }
   efi_disk {
-    datastore_id      = var.talos_iso_destination_storage_pool
+    datastore_id      = var.datastore-vmdata
     pre_enrolled_keys = false
     file_format       = "raw"
     type              = "4m"
   }
   tpm_state {
-    datastore_id = var.talos_iso_destination_storage_pool
+    datastore_id = var.datastore-vmdata
     version      = "v2.0"
   }
   initialization {
@@ -70,8 +70,6 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
         address = "${cidrhost(var.network_cidr, each.key + var.control_plane_first_ip)}/${split("/", var.network_cidr)[1]}"
         gateway = var.network_gateway
       }
-
-
     }
     dns {
       servers = var.network_nameservers
@@ -112,7 +110,7 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
 
   disk {
     size         = var.control_plane_disk_size
-    datastore_id = var.proxmox_servers[each.value].disk_storage_pool
+    datastore_id = var.datastore-vmdata
     interface    = "scsi0"
     iothread     = true
     cache        = "writethrough"

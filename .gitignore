@@ -8,3 +8,4 @@ plan*
 *.tmp
 kubeconfig.y*
 /manifests/cilium/base/charts/
+gitleaks.csv
