@@ -17,12 +17,12 @@ resource "terraform_data" "inline-manifests" {
     },
     {
       name = "cilium-l2-announcement"
-      contents = templatefile("${path.module}/manifests/cilium/l2_announcement.yaml.tpl", {
+      contents = templatefile("${path.module}/manifests/cilium/l2_announcement.yaml", {
       })
     },
     {
       name = "cilium-lb-ip-pool"
-      contents = templatefile("${path.module}/manifests/cilium/lb_ip_pool.yaml.tpl", {
+      contents = templatefile("${path.module}/manifests/cilium/lb_ip_pool.yaml", {
       })
     }
     # {
