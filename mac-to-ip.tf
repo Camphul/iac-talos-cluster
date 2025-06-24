@@ -4,8 +4,8 @@ resource "time_sleep" "wait_for_vms_to_boot" {
     proxmox_virtual_environment_vm.talos-control-plane,
     proxmox_virtual_environment_vm.talos-worker-node
   ]
-
-  create_duration = "15s"
+  destroy_duration = "1s"
+  create_duration  = "15s"
 }
 
 # vms are booted, use nmap to scan the network and match the known mac
@@ -19,8 +19,7 @@ data "external" "mac-to-ip" {
     "${path.module}/cmd/mac-to-ip",
     "-subnet",
     join(",", var.mac-to-ip_scan_subnets),
-  ],
-    [for i, cfg in macaddress.talos-worker-node : cfg.address]
+    ],
     [for i, cfg in macaddress.talos-control-plane : cfg.address],
     [for i, cfg in macaddress.talos-worker-node : cfg.address],
   )

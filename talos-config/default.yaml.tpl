@@ -12,7 +12,6 @@ machine:
       # https://github.com/siderolabs/talos-cloud-controller-manager#node-certificate-approval
       cloud-provider: external
       rotate-server-certificates: true
-
   registries:
     mirrors:
       ghcr.io:

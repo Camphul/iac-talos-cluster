@@ -8,6 +8,7 @@ locals {
     ]
   ])
   vm_control_planes_count = length(local.vm_control_planes)
+  vm_worker_nodes_count   = length(local.vm_worker_nodes)
 }
 
 # this keeps bitching about the file already exists... i know, just skip it then
@@ -58,6 +59,7 @@ resource "proxmox_virtual_environment_vm" "talos-control-plane" {
         address = "${cidrhost(var.network_cidr, each.key + var.control_plane_first_ip)}/${split("/", var.network_cidr)[1]}"
         gateway = var.network_gateway
       }
+
 
     }
     dns {

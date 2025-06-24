@@ -38,9 +38,10 @@ resource "terraform_data" "inline-manifests" {
 
 resource "talos_machine_configuration_apply" "control-planes" {
   depends_on = [
-    data.external.mac-to-ip,
+    # data.external.mac-to-ip,
     data.talos_machine_configuration.cp,
     terraform_data.inline-manifests,
+    proxmox_virtual_environment_vm.talos-control-plane
   ]
   for_each = {
     for i, x in local.vm_control_planes : i => x
@@ -49,7 +50,6 @@ resource "talos_machine_configuration_apply" "control-planes" {
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.cp.machine_configuration
 
-  node = data.external.mac-to-ip.result[macaddress.talos-control-plane[each.key].address]
 
   config_patches = [
     templatefile("${path.module}/talos-config/control-plane.yaml.tpl", {
@@ -71,7 +71,7 @@ resource "talos_machine_configuration_apply" "control-planes" {
 
 resource "talos_machine_configuration_apply" "worker-nodes" {
   depends_on = [
-    data.external.mac-to-ip,
+    # data.external.mac-to-ip,
     data.talos_machine_configuration.wn,
   ]
   for_each = {
@@ -81,7 +81,8 @@ resource "talos_machine_configuration_apply" "worker-nodes" {
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.wn.machine_configuration
 
-  node = data.external.mac-to-ip.result[macaddress.talos-worker-node[each.key].address]
+  node = local.talos_worker_nodes[each.key]
+  #data.external.mac-to-ip.result[macaddress.talos-worker-node[each.key].address]
 
   config_patches = concat([
     templatefile("${path.module}/talos-config/worker-node.yaml.tpl", {
@@ -114,7 +115,7 @@ resource "talos_machine_configuration_apply" "worker-nodes" {
 resource "talos_machine_bootstrap" "this" {
   depends_on = [
     talos_machine_configuration_apply.control-planes,
-    talos_machine_configuration_apply.worker-nodes
+    talos_machine_configuration_apply.worker-nodes,
   ]
 
   client_configuration = talos_machine_secrets.this.client_configuration

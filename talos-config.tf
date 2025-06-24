@@ -1,8 +1,17 @@
 locals {
   cluster_endpoint_internal = "https://${var.cluster_domain}:${var.cluster_endpoint_port}"
   cluster_endpoint          = "https://${var.cluster_vip}:${var.cluster_endpoint_port}"
-  storage_mnt               = "/var/mnt/storage"
-
+  talos_cp_endpoints = [
+    for i in range(
+      var.control_plane_first_ip, var.control_plane_first_ip + local.vm_control_planes_count
+    ) : cidrhost(var.network_cidr, i)
+  ]
+  talos_worker_nodes = concat([var.cluster_vip], [
+    for i in range(
+      var.worker_node_first_ip, var.worker_node_first_ip + local.vm_worker_nodes_count
+    ) : cidrhost(var.network_cidr, i)
+  ])
+  storage_mnt = "/var/mnt/storage"
   # default talos_machine_configuration values
   talos_mc_defaults = {
     topology_region     = var.cluster_name,
@@ -22,17 +31,19 @@ locals {
 resource "talos_machine_secrets" "this" {}
 
 data "talos_client_configuration" "this" {
-  //noinspection HILUnresolvedReference
   client_configuration = talos_machine_secrets.this.client_configuration
   cluster_name         = var.cluster_name
-  endpoints = concat([var.cluster_vip], [
-    for i in range(
-      var.control_plane_first_ip, var.control_plane_first_ip + local.vm_control_planes_count
-    ) : cidrhost(var.network_cidr, i)
-  ])
+  nodes                = concat(local.talos_cp_endpoints, local.talos_worker_nodes)
+  endpoints            = concat(local.talos_cp_endpoints, [var.cluster_vip], )
 }
-
+data "talos_image_factory_urls" "this" {
+  talos_version = "v${var.talos_version}"
+  schematic_id  = var.talos_schematic_id
+  platform      = var.talos_schematic_platform
+  architecture  = "amd64"
+}
 data "talos_machine_configuration" "cp" {
+  depends_on         = [data.talos_image_factory_urls.this]
   machine_type       = "controlplane"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   cluster_name       = var.cluster_name
@@ -45,12 +56,6 @@ data "talos_machine_configuration" "cp" {
   config_patches = [
     templatefile("${path.module}/talos-config/default.yaml.tpl", local.talos_mc_defaults),
   ]
-}
-data "talos_image_factory_urls" "this" {
-  talos_version = "v${var.talos_version}"
-  schematic_id  = var.talos_schematic_id
-  platform      = var.talos_schematic_platform
-  architecture  = "amd64"
 }
 data "talos_machine_configuration" "wn" {
   machine_type       = "worker"
