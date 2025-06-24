@@ -98,13 +98,20 @@ ingressController:
   default: true
   loadbalancerMode: shared
   enforceHttps: false
-
+envoy:
+  securityContext:
+    capabilities:
+      keepCapNetBindService: true
+      envoy:
+        - NET_ADMIN
+        - PERFMON
+        - BPF
 hubble:
-  enabled: true
+  enabled: false
   relay:
-    enabled: true
+    enabled: false
   ui:
-    enabled: true
+    enabled: false
 
 ipam:
   mode: kubernetes

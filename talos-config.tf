@@ -1,5 +1,5 @@
 locals {
-  cluster_endpoint     = "https://${var.cluster_domain}:${var.cluster_endpoint_port}"
+  cluster_endpoint     = "https://localhost:7445"
   cluster_endpoint_vip = "https://${var.cluster_vip}:${var.cluster_endpoint_port}"
   talos_cp_endpoints = [
     for i in range(

@@ -2,8 +2,9 @@ resource "talos_cluster_kubeconfig" "this" {
   depends_on = [
     talos_machine_bootstrap.this,
   ]
-  node                 = cidrhost(var.network_cidr, var.control_plane_first_ip)
-  endpoint             = "https://${var.cluster_domain}:${var.cluster_endpoint_port}"
+  node = var.control_plane_first_ip
+
+  #       = "https://10.10.80.12:${var.cluster_endpoint_port}"
   client_configuration = data.talos_client_configuration.this.client_configuration
 }
 
