@@ -70,3 +70,4 @@ data "talos_machine_configuration" "wn" {
     templatefile("${path.module}/talos-config/default.yaml.tpl", local.talos_mc_defaults),
   ]
 }
+

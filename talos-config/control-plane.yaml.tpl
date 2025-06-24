@@ -28,9 +28,6 @@ machine:
       - ${search_domain}
     %{ endfor }
     extraHostEntries:
-      - ip: 127.0.0.1
-        aliases:
-          - ${cluster_domain}
       - ip: 10.10.10.170 # RPI hosting registry mirrors
         # The host alias.
         aliases:
