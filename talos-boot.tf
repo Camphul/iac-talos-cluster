@@ -14,16 +14,6 @@ resource "terraform_data" "inline-manifests" {
       # required, is used as CNI and is needed for Talos to report nodes as ready
       name     = "cilium"
       contents = data.external.kustomize_cilium.result.manifests
-    },
-    {
-      name = "cilium-l2-announcement"
-      contents = templatefile("${path.module}/manifests/cilium/l2_announcement.yaml", {
-      })
-    },
-    {
-      name = "cilium-lb-ip-pool"
-      contents = templatefile("${path.module}/manifests/cilium/lb_ip_pool.yaml", {
-      })
     }
     # {
     #   name     = "cilium-bgp-peering-policy"
