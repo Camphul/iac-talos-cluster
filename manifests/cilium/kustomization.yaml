@@ -2,3 +2,5 @@ namespace: cilium-system
 resources:
   - base
   - high-priority-scheduling.yaml
+  - lb_ip_pool.yaml
+  - l2_announcement.yaml

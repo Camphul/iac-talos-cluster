@@ -51,7 +51,7 @@ externalIPs:
   enabled: true
 
 ciliumEndpointSlice:
-  enabled: true
+  enabled: false
 
 loadBalancer:
   algorithm: maglev
